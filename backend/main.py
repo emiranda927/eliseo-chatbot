@@ -8,10 +8,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
+# Remove proxy-related environment variables if they exist
+os.environ.pop("HTTP_PROXY", None)
+os.environ.pop("HTTPS_PROXY", None)
+
 # Load environment variables and set OpenAI API key
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
-openai.proxy = None  # Disable proxies if causing issues
+# Optionally, ensure no proxy is used (you can also set this to an empty string)
+openai.proxy = None
 
 app = FastAPI()
 
