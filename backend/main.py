@@ -22,7 +22,10 @@ app = FastAPI()
 # Configure CORS (adjust origins for production)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, replace with your frontend URL
+    allow_origins=[
+        "https://prismatic-youtiao-442467.netlify.app",  # Production
+        "http://localhost:5173",  # Local development
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
