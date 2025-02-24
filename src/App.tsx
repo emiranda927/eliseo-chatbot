@@ -3,7 +3,7 @@ import { Send } from 'lucide-react';
 import { ChatMessage } from './components/ChatMessage';
 import type { Message, ChatResponse } from './types';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || 'https://work-history-chatbot-api.onrender.com';
 
 function App() {
   const [messages, setMessages] = useState<Message[]>([{
