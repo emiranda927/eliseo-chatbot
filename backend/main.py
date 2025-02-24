@@ -12,7 +12,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configure OpenAI
-openai.api_key = os.getenv("OPENAI_API_KEY")
+openai_client = openai.OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY")
+)
 
 app = FastAPI()
 
@@ -33,7 +35,7 @@ def initialize_faiss_index():
     # Compute embeddings for all stories
     embeddings = []
     for story in stories:
-        response = openai.embeddings.create(
+        response = openai_client.embeddings.create(
             model="text-embedding-ada-002",
             input=story["content"]
         )
@@ -57,7 +59,7 @@ class ChatRequest(BaseModel):
 
 def retrieve_relevant_stories(query: str, k: int = 2):
     # Get embedding for the query
-    response = openai.embeddings.create(
+    response = openai_client.embeddings.create(
         model="text-embedding-ada-002",
         input=query
     )
@@ -89,7 +91,7 @@ async def chat(request: ChatRequest):
             system_prompt += f"Experience: {story['title']}\n{story['content']}\n\n"
         
         # Generate response using ChatGPT
-        chat_response = openai.chat.completions.create(
+        chat_response = openai_client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": system_prompt},
