@@ -2,6 +2,7 @@ services:
   - type: web
     name: work-history-chatbot-api
     env: python
+    rootDir: backend
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
@@ -9,4 +10,4 @@ services:
         sync: false
     cors:
       allowOrigins:
-        - https://your-netlify-app.netlify.app
+        - https://prismatic-youtiao-442467.netlify.app
