@@ -17,7 +17,7 @@ app = FastAPI()
 # Configure CORS (adjust origins for production)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # In production, replace with your frontend URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -31,7 +31,7 @@ def initialize_faiss_index():
         
         embeddings = []
         for story in stories:
-            response = openai.Embedding.create(
+            response = openai.embeddings.create(
                 model="text-embedding-ada-002",
                 input=story["content"]
             )
@@ -54,7 +54,7 @@ class ChatRequest(BaseModel):
     message: str
 
 def retrieve_relevant_stories(query: str, k: int = 2):
-    response = openai.Embedding.create(
+    response = openai.embeddings.create(
         model="text-embedding-ada-002",
         input=query
     )
