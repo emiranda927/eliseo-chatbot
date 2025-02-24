@@ -11,6 +11,8 @@ from dotenv import load_dotenv
 # Load environment variables and set OpenAI API key
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
+# Disable proxy usage to avoid passing an unexpected keyword argument
+openai.proxy = None
 
 app = FastAPI()
 
