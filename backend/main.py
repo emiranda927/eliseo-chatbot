@@ -15,7 +15,6 @@ os.environ.pop("HTTPS_PROXY", None)
 # Load environment variables and set OpenAI API key
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
-# Optionally, ensure no proxy is used (you can also set this to an empty string)
 openai.proxy = None
 
 app = FastAPI()
@@ -41,7 +40,8 @@ def initialize_faiss_index():
                 model="text-embedding-ada-002",
                 input=story["content"]
             )
-            embedding = response["data"][0]["embedding"]
+            # Use attribute access instead of subscripting
+            embedding = response.data[0].embedding
             embeddings.append(embedding)
         
         embeddings_array = np.array(embeddings).astype("float32")
@@ -64,7 +64,8 @@ def retrieve_relevant_stories(query: str, k: int = 2):
         model="text-embedding-ada-002",
         input=query
     )
-    query_embedding = np.array(response["data"][0]["embedding"], dtype="float32")
+    # Update attribute access here as well:
+    query_embedding = np.array(response.data[0].embedding, dtype="float32")
     query_embedding = np.expand_dims(query_embedding, axis=0)
     
     distances, indices = faiss_index.search(query_embedding, k)
