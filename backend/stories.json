@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "title": "Project Leadership Success",
+    "content": "Led a cross-functional team of 8 developers to deliver a mission-critical e-commerce platform. Implemented agile methodologies that increased team velocity by 40% and delivered the project two weeks ahead of schedule. The platform processed over $2M in transactions within its first quarter."
+  },
+  {
+    "id": 2,
+    "title": "Technical Architecture Innovation",
+    "content": "Designed and implemented a microservices architecture that replaced a monolithic legacy system. This reduced deployment times by 65% and improved system reliability from 99.9% to 99.99%. Introduced containerization and automated CI/CD pipelines that reduced infrastructure costs by 35%."
+  },
+  {
+    "id": 3,
+    "title": "Team Mentorship Initiative",
+    "content": "Established a mentorship program for junior developers, creating structured learning paths and code review processes. This initiative resulted in a 50% reduction in onboarding time for new team members and improved code quality metrics by 30%."
+  }
+]
