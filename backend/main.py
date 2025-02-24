@@ -2,21 +2,21 @@ import json
 import os
 import numpy as np
 import faiss
-import openai
+from openai import OpenAI
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
-# Load environment variables and set OpenAI API key
+# Load environment variables
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
-# Disable proxy usage to avoid passing an unexpected keyword argument
-openai.proxy = None
+
+# Initialize OpenAI client
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 app = FastAPI()
 
-# Configure CORS (adjust origins for production)
+# Configure CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # In production, replace with your frontend URL
@@ -33,11 +33,11 @@ def initialize_faiss_index():
         
         embeddings = []
         for story in stories:
-            response = openai.embeddings.create(
+            response = client.embeddings.create(
                 model="text-embedding-ada-002",
                 input=story["content"]
             )
-            embedding = response["data"][0]["embedding"]
+            embedding = response.data[0].embedding
             embeddings.append(embedding)
         
         embeddings_array = np.array(embeddings).astype("float32")
@@ -56,11 +56,11 @@ class ChatRequest(BaseModel):
     message: str
 
 def retrieve_relevant_stories(query: str, k: int = 2):
-    response = openai.embeddings.create(
+    response = client.embeddings.create(
         model="text-embedding-ada-002",
         input=query
     )
-    query_embedding = np.array(response["data"][0]["embedding"], dtype="float32")
+    query_embedding = np.array(response.data[0].embedding, dtype="float32")
     query_embedding = np.expand_dims(query_embedding, axis=0)
     
     distances, indices = faiss_index.search(query_embedding, k)
@@ -84,7 +84,7 @@ async def chat(request: ChatRequest):
         for story in relevant_stories:
             system_prompt += f"Experience: {story['title']}\n{story['content']}\n\n"
         
-        chat_response = openai.ChatCompletion.create(
+        chat_response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": system_prompt},
@@ -94,7 +94,7 @@ async def chat(request: ChatRequest):
             max_tokens=500
         )
         
-        return {"response": chat_response["choices"][0]["message"]["content"]}
+        return {"response": chat_response.choices[0].message.content}
     
     except Exception as e:
         print(f"Error in chat endpoint: {str(e)}")
